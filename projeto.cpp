@@ -1,12 +1,32 @@
 #include <iostream>
 #include <vector>
 #include <limits>
+#include <iomanip>
 
 struct Processo
 {
   int entrar;
   int demora;
 };
+
+float calcularMedia(const std::vector<int> &vetor)
+{
+  int soma = 0;
+  for (int valor : vetor)
+  {
+    soma += valor;
+  }
+
+  if (vetor.size() > 0)
+  {
+    float media = static_cast<float>(soma) / vetor.size();
+    return media;
+  }
+  else
+  {
+    return 0.0;
+  }
+}
 
 void sjf(const std::vector<Processo> &processos)
 {
@@ -65,6 +85,7 @@ void sjf(const std::vector<Processo> &processos)
 
     time++;
   }
+  /*
   std::cout << "\ntempodeResposta: ";
   for (int i = 0; i < tempodeResposta.size(); i++)
   {
@@ -83,7 +104,13 @@ void sjf(const std::vector<Processo> &processos)
     std::cout << tempodeRetorno[i] << " ";
   }
   std::cout << "\n " << std::endl;
-  // std::cout << "\nmenor demora: " << menorDemora << " jump enter process: " << jumpEnterProcess << std::endl;
+  */
+  float mediaResp = calcularMedia(tempodeResposta);
+  float mediaEsp = mediaResp;
+  float mediaRet = calcularMedia(tempodeRetorno);
+
+  std::cout << "\nSJF " << std::fixed << std::setprecision(1) << mediaResp << " " << mediaEsp << " " << mediaRet << "\n"
+            << std::endl;
 }
 
 int main()
