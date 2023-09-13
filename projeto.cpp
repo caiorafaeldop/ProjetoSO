@@ -123,15 +123,29 @@ void fcfs(const std::vector<Processo> &processos)
   int i;
   int lookingfor = 0;
   int abrir = std::numeric_limits<int>::max();
-  while (time < 60)
+  bool umjaentrou = false;
+  while (1)
   {
     i = 0;
-
+    bool incrementarTime = true;
     bool entreiAqui = false;
     if (!doing)
     {
       std::cout << "\nna passada do time: " << time << " nao estou fazendo nada, vou checar os processos agora\n"
                 << std::endl;
+      bool encerrar = true;
+      for (bool value : entered)
+      {
+        if (!value)
+        {
+          encerrar = false;
+        }
+      }
+      if (encerrar)
+      {
+        break;
+      }
+
       for (const Processo &processo : processos)
       {
 
@@ -140,18 +154,38 @@ void fcfs(const std::vector<Processo> &processos)
           std::cout << "\nachei o que fazer: " << i << " sera processado a partir de agora\n"
                     << std::endl;
 
+          umjaentrou = true;
           entreiAqui = true;
           doing = true;
           entered[i] = true;
           tempodeResposta[i] = time - processo.entrar;
           tempodeRetorno[i] = time - processo.entrar + processo.demora;
           abrir = processo.demora - 1;
+          if (i == 5)
+          {
+            std::cout << "\n!!! " << i << " sera processado!!! \n"
+                      << time << " " << processo.entrar
+                      << std::endl;
+          }
         }
         i++;
       }
-      if (!entreiAqui)
+      bool temfalse = true;
+      for (bool value : entered)
+      {
+        if (!value)
+        {
+          temfalse = false;
+        }
+      }
+      if (!temfalse and !entreiAqui)
       {
         lookingfor++;
+        std::cout << "\nATENCAO oi, existem itens n processados e eu nao entrei. Vou incrementar: " << lookingfor << " no time " << time << std::endl;
+        if (time != 0 and umjaentrou)
+        {
+          incrementarTime = false;
+        }
       }
     }
     else
@@ -164,7 +198,10 @@ void fcfs(const std::vector<Processo> &processos)
         doing = false;
       }
     }
-    time++;
+    if (incrementarTime)
+    {
+      time++;
+    }
   }
   float mediaResp = calcularMedia(tempodeResposta);
   float mediaEsp = mediaResp;
@@ -238,7 +275,7 @@ std::cout << "\n " << std::endl;
 
 int main()
 {
-  std::vector<Processo> processos = {{1, 25}, {2, 3}, {1, 6}, {2, 5}, {1, 2}, {2, 4}};
+  std::vector<Processo> processos = {{3, 4}, {2, 3}, {5, 6}, {6, 5}, {3, 2}, {6, 4}};
   fcfs(processos);
   return 0;
 }
