@@ -40,11 +40,27 @@ void sjf(const std::vector<Processo> &processos)
   int ii = 0;
   int jumpEnterProcess = 0;
   int menorDemora = std::numeric_limits<int>::max();
-  while (time < 46)
+  while (1)
   {
     i = 0;
     bool existeProcesso = false;
     int tempodeEntrada, tempofazendo;
+    if (!doing)
+    {
+      bool encerrar = true;
+      for (bool value : entered)
+      {
+        if (!value)
+        {
+          encerrar = false;
+        }
+      }
+      if (encerrar)
+      {
+        break;
+      }
+    }
+
     for (const Processo &processo : processos)
     {
       // std::cout << "demora: " << processo.demora << ", entrar: " << processo.entrar << std::endl;
@@ -61,7 +77,7 @@ void sjf(const std::vector<Processo> &processos)
       }
       i++;
     }
-    // std::cout << "\nna passada do time: " << time << " a menor demora ta no: " << ii << std::endl;
+    std::cout << "\nna passada do time: " << time << " a menor demora ta no: " << ii << std::endl;
 
     if (!doing and existeProcesso)
     {
@@ -81,11 +97,9 @@ void sjf(const std::vector<Processo> &processos)
       }
     }
 
-    // std::cout << "\nna passada do time: " << time << " jumpEnterProcess eh: " << jumpEnterProcess << " sou o processo: " << ii << std::endl;
-
     time++;
   }
-  /*
+
   std::cout << "\ntempodeResposta: ";
   for (int i = 0; i < tempodeResposta.size(); i++)
   {
@@ -104,7 +118,7 @@ void sjf(const std::vector<Processo> &processos)
     std::cout << tempodeRetorno[i] << " ";
   }
   std::cout << "\n " << std::endl;
-  */
+
   float mediaResp = calcularMedia(tempodeResposta);
   float mediaEsp = mediaResp;
   float mediaRet = calcularMedia(tempodeRetorno);
@@ -276,6 +290,7 @@ std::cout << "\n " << std::endl;
 int main()
 {
   std::vector<Processo> processos = {{3, 4}, {2, 3}, {5, 6}, {6, 5}, {3, 2}, {6, 4}};
-  fcfs(processos);
+  sjf(processos);
+  // fcfs(processos);
   return 0;
 }
