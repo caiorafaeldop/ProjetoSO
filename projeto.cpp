@@ -14,7 +14,8 @@ void sjf(const std::vector<Processo> &processos)
   bool doing = false;
   // int trespera[processos.size()];
   std::vector<bool> entered(processos.size(), false);
-  std::vector<int> tempoQueEntrou(processos.size());
+  std::vector<int> tempodeResposta(processos.size());
+  std::vector<int> tempodeRetorno(processos.size());
   int i = 0;
   int ii = 0;
   int jumpEnterProcess = 0;
@@ -23,6 +24,7 @@ void sjf(const std::vector<Processo> &processos)
   {
     i = 0;
     bool existeProcesso = false;
+    int tempodeEntrada, tempofazendo;
     for (const Processo &processo : processos)
     {
       // std::cout << "demora: " << processo.demora << ", entrar: " << processo.entrar << std::endl;
@@ -33,6 +35,8 @@ void sjf(const std::vector<Processo> &processos)
         {
           menorDemora = processo.demora;
           ii = i;
+          tempodeEntrada = processo.entrar;
+          tempofazendo = processo.demora;
         }
       }
       i++;
@@ -44,7 +48,8 @@ void sjf(const std::vector<Processo> &processos)
       jumpEnterProcess = menorDemora - 1;
       doing = true;
       entered[ii] = true;
-      tempoQueEntrou[ii] = time;
+      tempodeResposta[ii] = time - tempodeEntrada;
+      tempodeRetorno[ii] = time - tempodeEntrada + tempofazendo;
       menorDemora = std::numeric_limits<int>::max();
     }
     else
@@ -56,10 +61,28 @@ void sjf(const std::vector<Processo> &processos)
       }
     }
 
-    std::cout << "\nna passada do time: " << time << " jumpEnterProcess eh: " << jumpEnterProcess << " sou o processo: " << ii << std::endl;
+    // std::cout << "\nna passada do time: " << time << " jumpEnterProcess eh: " << jumpEnterProcess << " sou o processo: " << ii << std::endl;
 
     time++;
   }
+  std::cout << "\ntempodeResposta: ";
+  for (int i = 0; i < tempodeResposta.size(); i++)
+  {
+    std::cout << tempodeResposta[i] << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "\ntempodeEspera: ";
+  for (int i = 0; i < tempodeResposta.size(); i++)
+  {
+    std::cout << tempodeResposta[i] << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "\ntempodeRetorno: ";
+  for (int i = 0; i < tempodeRetorno.size(); i++)
+  {
+    std::cout << tempodeRetorno[i] << " ";
+  }
+  std::cout << "\n " << std::endl;
   // std::cout << "\nmenor demora: " << menorDemora << " jump enter process: " << jumpEnterProcess << std::endl;
 }
 
