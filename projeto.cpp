@@ -2,12 +2,32 @@
 #include <vector>
 #include <limits>
 #include <iomanip>
+#include <fstream>
 
 struct Processo
 {
   int entrar;
   int demora;
 };
+
+float calcularMedia(const std::vector<int> &vetor)
+{
+  int soma = 0;
+  for (int valor : vetor)
+  {
+    soma += valor;
+  }
+
+  if (vetor.size() > 0)
+  {
+    float media = static_cast<float>(soma) / vetor.size();
+    return media;
+  }
+  else
+  {
+    return 0.0;
+  }
+}
 
 void rr(const std::vector<Processo> &processos)
 
@@ -33,8 +53,6 @@ void rr(const std::vector<Processo> &processos)
 
   while (time < 10 || !fila.empty())
   {
-    std::cout << "\nOi, estou dentro do while no tempo " << time << "\n"
-              << std::endl;
     int i = 0;
 
     for (const Processo &processo : processos)
@@ -46,10 +64,7 @@ void rr(const std::vector<Processo> &processos)
         demorasStatic[i] = processo.demora;
         entrada[i] = processo.entrar;
         entered[i] = true;
-        std::cout << "\nColocando na fila " << i << " e a demora dele: " << demoras[i] << " primeiro da fila: "
-                  << fila[0]
-                  << std::endl;
-      }
+          }
 
       i++;
     }
@@ -84,6 +99,7 @@ void rr(const std::vector<Processo> &processos)
       }
     }
     // coloque aqui para ele printar a fila
+    /*
     std::cout << "Conteudo da fila: ";
     for (int processo : fila)
     {
@@ -93,8 +109,10 @@ void rr(const std::vector<Processo> &processos)
     std::cout << "time: " << time
               << "\n"
               << std::endl;
+              */
     time++;
   }
+  /*
   std::cout << "\ntempodeRetorno: ";
   for (int i = 0; i < tempodeRetorno.size(); i++)
   {
@@ -112,96 +130,13 @@ void rr(const std::vector<Processo> &processos)
     std::cout << tempodeResposta[i] << " ";
   }
   std::cout << std::endl;
-}
-/*
-    i = 0;
-    bool incrementarTime = true;
-    bool entreiAqui = false;
-    if (!doing)
-    {
-      bool encerrar = true;
-      for (bool value : entered)
-      {
-        if (!value)
-        {
-          encerrar = false;
-        }
-      }
-      if (encerrar)
-      {
-        break;
-      }
-
-      for (const Processo &processo : processos)
-      {
-
-        if ((processo.entrar <= lookingfor) && !entered[i] && !entreiAqui)
-        {
-          umjaentrou = true;
-          entreiAqui = true;
-          doing = true;
-          entered[i] = true;
-          tempodeResposta[i] = time - processo.entrar;
-          tempodeRetorno[i] = time - processo.entrar + processo.demora;
-          abrir = processo.demora - 1;
-        }
-        i++;
-      }
-      bool temfalse = true;
-      for (bool value : entered)
-      {
-        if (!value)
-        {
-          temfalse = false;
-        }
-      }
-      if (!temfalse and !entreiAqui)
-      {
-        lookingfor++;
-        if (time != 0 and umjaentrou)
-        {
-          incrementarTime = false;
-        }
-      }
-    }
-    else
-    {
-      abrir--;
-      if (abrir == 0)
-      {
-        doing = false;
-      }
-    }
-    if (incrementarTime)
-    {
-      time++;
-    }
-  }
+  */
   float mediaResp = calcularMedia(tempodeResposta);
-  float mediaEsp = mediaResp;
+  float mediaEsp = calcularMedia(tempodeEspera);
   float mediaRet = calcularMedia(tempodeRetorno);
 
-  std::cout << "\nFCFS " << std::fixed << std::setprecision(1) << mediaRet << " " << mediaResp << " " << mediaEsp << "\n"
+  std::cout << "\nRR " << std::fixed << std::setprecision(1) << mediaRet << " " << mediaResp << " " << mediaEsp << "\n"
             << std::endl;
-            */
-
-float calcularMedia(const std::vector<int> &vetor)
-{
-  int soma = 0;
-  for (int valor : vetor)
-  {
-    soma += valor;
-  }
-
-  if (vetor.size() > 0)
-  {
-    float media = static_cast<float>(soma) / vetor.size();
-    return media;
-  }
-  else
-  {
-    return 0.0;
-  }
 }
 
 void sjf(const std::vector<Processo> &processos)
@@ -388,9 +323,35 @@ void fcfs(const std::vector<Processo> &processos)
 
 int main()
 {
-  std::vector<Processo> processos = {{3, 4}, {1, 3}, {0, 6}, {6, 5}, {0, 2}, {0, 4}};
-  // sjf(processos);
-  // fcfs(processos);
-  rr(processos);
-  return 0;
+
+  std::vector<Processo> processos;
+
+  // Abra o arquivo de entrada
+  std::ifstream arquivo("dados.txt");
+
+  if (!arquivo)
+  {
+    std::cerr << "Erro ao abrir o arquivo de entrada." << std::endl;
+    return 1;
+  }
+
+  int entrar, demora;
+  while (arquivo >> entrar >> demora)
+  {
+    Processo processo = {entrar, demora};
+    processos.push_back(processo);
+  }
+
+  arquivo.close();
+
+  if (!processos.empty())
+  {
+    rr(processos);
+    sjf(processos);
+    fcfs(processos);
+  }
+  else
+  {
+    std::cerr << "\nNao tem processos." << std::endl;
+  }
 }
